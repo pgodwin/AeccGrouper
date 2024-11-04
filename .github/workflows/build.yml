@@ -4,14 +4,14 @@ jobs:
   main-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup .NET Core SDK 8.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - uses: paulhatch/semantic-version@v4.0.2
+      - uses: paulhatch/semantic-version@v5.4.0
         id: semantic_version
         with:
           tag_prefix: "v"
@@ -22,14 +22,14 @@ jobs:
       - name: Build AeccGrouper
         run: dotnet build --configuration Release --no-restore AeccGrouper -o ./bin
       - name: Upload Compiled Binaries
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dotnetcore-bin
           path: bin/
       - name: Package AeccGrouper
         run: dotnet pack --configuration Release --no-restore AeccGrouper -o ./nupkgs /p:Version=${{ steps.semantic_version.outputs.VERSION }}
       - name: Upload AeccGrouper Package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: AeccGrouper.nupkg
           path: nupkgs/AeccGrouper.*
@@ -37,7 +37,7 @@ jobs:
     needs: [main-build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup .NET Core SDK 8.0
         uses: actions/setup-dotnet@v4
         with:
@@ -53,7 +53,7 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Verify commit exists in origin/main
@@ -61,7 +61,7 @@ jobs:
     - name: Set VERSION variable from tag
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Download AeccGrouper.nupkg
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: 'AeccGrouper.nupkg'
         path: ./nupkgs
