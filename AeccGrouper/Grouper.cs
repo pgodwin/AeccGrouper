@@ -209,7 +209,7 @@ namespace AeccGrouper
 
             if (string.IsNullOrWhiteSpace(principalDiaignosisShortCode))
             {
-                result.AECC_EndClass = "E99002"; // Missing principal diagnosis shortlist code
+                result.AECC_EndClass = "E99002Z"; // Missing principal diagnosis shortlist code
                 return result;
             }
             
@@ -219,7 +219,7 @@ namespace AeccGrouper
             // If no code is returend, we can assume it's invalid and can return the error class
             if (shortListCode == null)
             {
-                result.AECC_EndClass = "E99003"; // Invalid principal diagnosis 
+                result.AECC_EndClass = "E9903Z"; // Invalid principal diagnosis 
                 return result;
             }
 
@@ -279,6 +279,7 @@ namespace AeccGrouper
             // -----------------------------------------------------------------------------------------------------
 
             var ageBracket = GetAgeBracket(ageYears);
+            result.AgeBracket = ageBracket;
 
             // Perform the validation, if any fail return the error class E9904Z Other error
             if (string.IsNullOrWhiteSpace(transportMode) ||
@@ -312,7 +313,7 @@ namespace AeccGrouper
             result.TransportModeScore = triageCategoryValue?.TransportModeValue ?? 0;
             result.EpisodeEndStatusScore = triageCategoryValue?.EpisodeEndStatusValue ?? 0;
             result.TriageCategoryScore = triageCategoryValue?.TriageCategoryValue ?? 0;
-
+            
             result.AgeGroupScore = ReferenceDataService.GetAgeGroup(result.ECDG, ageBracket)?.AgeGroupValue ?? 0;
             
             var interactionRecord = ReferenceDataService.GetInteraction(result.ECDG, triageCategory, ageBracket);
@@ -342,8 +343,7 @@ namespace AeccGrouper
                                  result.EpisodeEndStatusScore +
                                  result.TriageCategoryScore +
                                  result.AgeGroupScore +
-                                 result.TriageInteractionScore +
-                                 result.AgeInteractionScore;
+                                 result.InteractionScore;
 
             // These are then re - scaled to generate the complexity score.
             // In this example, the predicted value is 7.09, and the re - scaled complexity
@@ -359,10 +359,11 @@ namespace AeccGrouper
             // * 3.26 reflects the minimum value of the previous steps, with a small adjustment to
             //   ensure new observations are all greater than zero.
 
-            var score = (Math.Exp(predictedValue) - 713.0d) / 166.0d + 3.26d;
+            double score = (Math.Exp(Math.Round(predictedValue, 4, MidpointRounding.AwayFromZero)) - 713d) / 166d + 3.26d;
             if (score < 0) // make sure they're all greater than 0
                 score = 0;
 
+            
             result.ScaledComplexityScore = score;
             result.PredicatedValue = predictedValue;
 

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System.Data.SQLite;
+using System.Reflection;
 
 namespace AeccGrouper.Reference
 {
@@ -7,9 +8,35 @@ namespace AeccGrouper.Reference
     /// SQLite implementation of grouper reference data
     /// </summary>
     /// <param name="connectionString"></param>
-    public class ReferenceDataProviderService(string connectionString) : IReferenceDataProviderService
+    public class ReferenceDataProviderService : IReferenceDataProviderService, IDisposable
     {
-        private readonly string connectionString = connectionString;
+        public ReferenceDataProviderService(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
+
+        private const string EMBEDDED_ECGD_VALUES_DB = "AeccGrouper.ecdg_values.db";
+
+        public ReferenceDataProviderService()
+        {
+            var tempFilePath = Path.GetTempFileName();
+
+            // Write out the embedded resource into the file
+
+            using (var stream = this.GetType().Assembly.GetManifestResourceStream(EMBEDDED_ECGD_VALUES_DB))
+            {
+                using (var fileStream = File.Create(tempFilePath))
+                {
+                    stream.CopyTo(fileStream);
+                }
+            }
+
+            this.connectionString = $"Data Source={tempFilePath}";
+
+
+        }
+
+        private readonly string connectionString;
 
         public Ref_D3_AgeGroup? GetAgeGroup(string ECDG, string ageBracket)
         {
@@ -197,6 +224,11 @@ namespace AeccGrouper.Reference
                         new { ECDG, minScore })
                     .ToList();
             }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 

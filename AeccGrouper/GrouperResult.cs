@@ -3,20 +3,20 @@
     public class GrouperResult
     {
 
-        public string EpisodeNumber { get; set; }
-        public string TriageCategory { get; set; }
+        public string EpisodeNumber { get; set; } = string.Empty;
+        public string TriageCategory { get; set; } = string.Empty;
 
-        public string EpisodeEndStatus { get; set; }
-        
-        public string TypeOfVisitToEd { get; set; }
+        public string EpisodeEndStatus { get; set; } = string.Empty;
 
-        public string AgeYears { get; set; }
+        public string TypeOfVisitToEd { get; set; } = string.Empty;
 
-        public string TransportMode { get; set; }
+        public string AgeYears { get; set; } = string.Empty;
 
-        public string PrincipalDiagnosisShortCode { get; set; }
+        public string TransportMode { get; set; } = string.Empty;
 
-        public string ServiceDate { get; set; }
+        public string PrincipalDiagnosisShortCode { get; set; } = string.Empty;
+
+        public string ServiceDate { get; set; } = string.Empty;
 
         public double InterceptScore { get; set; } = 0;
 
@@ -34,10 +34,11 @@
 
         public double AgeInteractionScore { get; set; } = 0;
 
-        public double PredicatedValue { get; set; }
-        public double ScaledComplexityScore { get; set; }
-        public string ECDG { get; set; }
-        public string ECDG_Subgroup { get; set; }
-        public double InteractionScore { get; set; }
+        public double PredicatedValue { get; set; } = 0;
+        public double ScaledComplexityScore { get; set; } = 0;
+        public string ECDG { get; set; } = string.Empty;
+        public string ECDG_Subgroup { get; set; } = string.Empty;
+        public double InteractionScore { get; set; } = 0;
+        public string AgeBracket { get; internal set; }
     }
 }

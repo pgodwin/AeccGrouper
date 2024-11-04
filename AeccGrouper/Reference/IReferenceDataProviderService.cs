@@ -4,7 +4,7 @@ namespace AeccGrouper.Reference
     /// <summary>
     /// Interface to the reference data service
     /// </summary>
-    public interface IReferenceDataProviderService
+    public interface IReferenceDataProviderService : IDisposable
     {
       
         List<Ref_C1> GetRef_C1();
