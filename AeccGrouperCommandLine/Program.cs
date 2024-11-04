@@ -1,8 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using AeccGrouper.Reference;
+
 using Dumpify;
 using System.Globalization;
 using AeccGrouper;
+using AeccGrouper.Reference;
 using CsvHelper.Configuration;
 
 
